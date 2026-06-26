@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astro Lab — 천문 과학 시뮬레이션</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="bg"></canvas>
+
+    <header>
+        <div class="header-inner">
+            <div class="logo">
+                <span class="logo-icon">✦</span>
+                <span class="logo-text">Astro Lab</span>
+            </div>
+            <p class="tagline">천문 과학 현상을 인터랙티브 시뮬레이션으로 탐험하세요</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="grid" id="simGrid">
+
+            <a class="card" href="blackhole-lens/">
+                <div class="card-icon">⚫</div>
+                <div class="card-body">
+                    <h2>블랙홀 중력 렌즈</h2>
+                    <p>블랙홀의 강한 중력이 빛의 경로를 휘어 배경 별들이 왜곡되어 보이는 아인슈타인 렌즈 현상을 실시간으로 체험합니다.</p>
+                    <div class="card-tags">
+                        <span>WebGL</span>
+                        <span>중력 렌즈</span>
+                        <span>일반 상대성이론</span>
+                    </div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <a class="card" href="binary-orbit/">
+                <div class="card-icon">🌟</div>
+                <div class="card-body">
+                    <h2>이진성 외계행성 궤도</h2>
+                    <p>두 별이 서로의 중력으로 공전하는 이진성 시스템에서 행성이 극궤도를 도는 특이한 천문 현상을 시뮬레이션합니다.</p>
+                    <div class="card-tags">
+                        <span>Canvas 2D</span>
+                        <span>만유인력</span>
+                        <span>케플러 법칙</span>
+                    </div>
+                </div>
+                <div class="card-arrow">→</div>
+            </a>
+
+            <!-- 새 카드는 여기에 추가 -->
+
+        </section>
+    </main>
+
+    <footer>
+        <p>Astro Lab · 천문 과학 시뮬레이션 컬렉션</p>
+    </footer>
+
+    <script src="bg.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이진성 외계행성 궤도 — Astro Lab</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <a href="../" id="backBtn">← Astro Lab</a>
+
+    <div id="controls">
+        <h2>이진성 외계행성 궤도</h2>
+
+        <div class="control-group">
+            <label>별 A 질량 <span id="massAVal">1.0</span>M☉</label>
+            <input type="range" id="massA" min="0.5" max="3.0" step="0.1" value="1.0">
+        </div>
+
+        <div class="control-group">
+            <label>별 B 질량 <span id="massBVal">0.7</span>M☉</label>
+            <input type="range" id="massB" min="0.5" max="3.0" step="0.1" value="0.7">
+        </div>
+
+        <div class="control-group">
+            <label>공전 속도 <span id="speedVal">1.0</span>×</label>
+            <input type="range" id="speed" min="0.1" max="3.0" step="0.1" value="1.0">
+        </div>
+
+        <div class="control-group">
+            <label>행성 궤도 기울기 <span id="tiltVal">75</span>°</label>
+            <input type="range" id="tilt" min="0" max="90" step="1" value="75">
+        </div>
+
+        <div class="control-group">
+            <label class="checkbox-label">
+                <input type="checkbox" id="showTrail" checked>
+                궤도 궤적 표시
+            </label>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item"><span class="dot yellow"></span> 별 A</div>
+            <div class="legend-item"><span class="dot orange"></span> 별 B</div>
+            <div class="legend-item"><span class="dot blue"></span> 외계행성</div>
+            <div class="legend-item"><span class="dot white"></span> 질량 중심</div>
+        </div>
+
+        <div class="info">
+            <p class="small">두 별의 중력이 서로를 당겨 공전하는 이진성 시스템.<br>행성은 두 별의 합산 중력으로 복잡한 극궤도를 그립니다.</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

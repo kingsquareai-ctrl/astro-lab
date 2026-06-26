@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블랙홀 중력 렌즈 효과</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <a href="../" id="backBtn">← Astro Lab</a>
+
+    <div id="controls">
+        <h2>블랙홀 중력 렌즈</h2>
+
+        <div class="control-group">
+            <label>블랙홀 질량 <span id="massValue">1.0</span>M</label>
+            <input type="range" id="mass" min="0.3" max="3.0" step="0.05" value="1.0">
+        </div>
+
+        <div class="control-group">
+            <label class="checkbox-label">
+                <input type="checkbox" id="showRadius">
+                반지름 경계 표시
+            </label>
+        </div>
+
+        <div class="legend" id="legendBox" style="display:none">
+            <div class="legend-item">
+                <span class="dot blue"></span> 슈바르츠실트 반지름 (Rs)
+            </div>
+            <div class="legend-item">
+                <span class="dot yellow"></span> 광자구 (1.5 Rs)
+            </div>
+        </div>
+
+        <div class="info">
+            <p>마우스로 블랙홀을 드래그하세요</p>
+            <p class="small">블랙홀의 강한 중력이 빛의 경로를 휘어,<br>배경 별들이 왜곡되어 보이는 현상입니다.</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #020510;
+    overflow: hidden;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+#backBtn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    font-size: 0.8rem;
+    color: #7eb3ff;
+    text-decoration: none;
+    background: rgba(2, 5, 20, 0.7);
+    border: 1px solid rgba(126, 179, 255, 0.25);
+    border-radius: 8px;
+    padding: 6px 14px;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s, border-color 0.2s;
+}
+
+#backBtn:hover {
+    background: rgba(126, 179, 255, 0.1);
+    border-color: rgba(126, 179, 255, 0.5);
+}
+
+#controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(2, 6, 22, 0.88);
+    border: 1px solid rgba(80, 130, 255, 0.25);
+    border-radius: 14px;
+    padding: 20px 22px;
+    min-width: 230px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+    color: #dde8ff;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+#controls h2 {
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #99b4ff;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+.control-group {
+    margin-bottom: 14px;
+}
+
+.control-group label {
+    display: block;
+    font-size: 0.78rem;
+    color: #7788bb;
+    margin-bottom: 5px;
+}
+
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #5580ff;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    accent-color: #5580ff;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.legend {
+    margin: 14px 0;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.04);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: #667799;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.dot.yellow { background: #ffe066; }
+.dot.orange { background: #ff8844; }
+.dot.blue   { background: #66aaff; }
+.dot.white  { background: rgba(255,255,255,0.5); }
+
+.info {
+    padding-top: 12px;
+    border-top: 1px solid rgba(80,130,255,0.15);
+}
+
+.small {
+    font-size: 0.7rem;
+    color: #3a4a66;
+    line-height: 1.6;
+}

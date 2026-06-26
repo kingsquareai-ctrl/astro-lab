@@ -1,0 +1,142 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#backBtn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    font-size: 0.8rem;
+    color: #7eb3ff;
+    text-decoration: none;
+    background: rgba(2, 5, 20, 0.7);
+    border: 1px solid rgba(126, 179, 255, 0.25);
+    border-radius: 8px;
+    padding: 6px 14px;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s, border-color 0.2s;
+}
+
+#backBtn:hover {
+    background: rgba(126, 179, 255, 0.1);
+    border-color: rgba(126, 179, 255, 0.5);
+}
+
+body {
+    background: #000;
+    overflow: hidden;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: #dde8ff;
+}
+
+canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+}
+
+#controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(2, 6, 22, 0.88);
+    border: 1px solid rgba(80, 130, 255, 0.25);
+    border-radius: 14px;
+    padding: 20px 22px;
+    min-width: 230px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.6);
+}
+
+#controls h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #99b4ff;
+    margin-bottom: 18px;
+    text-transform: uppercase;
+}
+
+.control-group {
+    margin-bottom: 16px;
+}
+
+.control-group label {
+    display: block;
+    font-size: 0.78rem;
+    color: #7788bb;
+    margin-bottom: 6px;
+}
+
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: #5580ff;
+    cursor: pointer;
+    height: 4px;
+}
+
+input[type="checkbox"] {
+    accent-color: #5580ff;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.legend {
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.72rem;
+    color: #667799;
+    margin-bottom: 5px;
+}
+
+.legend-item:last-child {
+    margin-bottom: 0;
+}
+
+.dot {
+    width: 10px;
+    height: 3px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.dot.blue  { background: #4499ff; }
+.dot.yellow { background: #ffcc33; }
+
+.info {
+    padding-top: 14px;
+    border-top: 1px solid rgba(80, 130, 255, 0.15);
+    font-size: 0.75rem;
+    color: #556688;
+    line-height: 1.6;
+}
+
+.info p {
+    margin-bottom: 5px;
+}
+
+.small {
+    font-size: 0.68rem;
+    color: #3a4a66;
+}
