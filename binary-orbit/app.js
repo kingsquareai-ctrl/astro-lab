@@ -3,7 +3,7 @@ const ctx    = canvas.getContext('2d');
 
 // ── 물리 상수 (시뮬레이션 단위) ──
 const G = 800;   // 중력 상수 (픽셀 스케일)
-const DT_BASE = 0.008;
+const DT_BASE = 0.025;
 
 // ── 상태 ──
 let W, H, cx, cy;
@@ -181,7 +181,7 @@ function render() {
     const dt = DT_BASE * speed;
 
     // 물리 업데이트 (여러 스텝)
-    for (let i = 0; i < 5; i++) step(dt);
+    for (let i = 0; i < 10; i++) step(dt);
 
     // 궤적 기록
     const TRAIL = 600;
