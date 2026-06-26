@@ -9,7 +9,7 @@ const DT_BASE = 0.025;
 let W, H, cx, cy;
 let massA  = 1.0;
 let massB  = 0.7;
-let speed  = 1.0;
+let speed  = 2.0;
 let tilt   = 75;   // 행성 궤도 기울기 (도)
 let showTrail = true;
 
@@ -272,12 +272,12 @@ function bindSlider(id, valId, setter, decimals = 1) {
     });
 }
 
-// 질량 변경: 별만 재설정, 행성은 계속 실행하며 즉시 중력 변화를 받음
-bindSlider('massA', 'massAVal', v => { massA = v; initStars(); });
-bindSlider('massB', 'massBVal', v => { massB = v; initStars(); });
+// 질량 변경: 전체 재설정 → 총 질량에 따라 행성 궤도 반지름이 즉시 달라짐
+bindSlider('massA', 'massAVal', v => { massA = v; initBodies(); });
+bindSlider('massB', 'massBVal', v => { massB = v; initBodies(); });
 // 속도: 리셋 없음
 bindSlider('speed', 'speedVal', v => { speed = v; });
-// 기울기: 행성 궤도면 자체가 바뀌므로 행성만 재설정
+// 기울기: 행성 궤도면만 변경
 bindSlider('tilt',  'tiltVal',  v => { tilt  = v; initPlanet(); }, 0);
 
 document.getElementById('showTrail').addEventListener('change', e => {
