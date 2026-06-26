@@ -372,119 +372,111 @@ function initCanvas(id) {
     animate();
 })();
 
-// ── 섹션 3: 적도 궤도 vs 극궤도 ─────────────────────────────────────────
+// ── 섹션 3: 적도 궤도 vs 극궤도 (매개변수 애니메이션) ───────────────────
 (function() {
     const EQ = initCanvas('c2a');
     const PO = initCanvas('c2b');
-    const G2 = 600;
 
-    function makeBinary(W, H) {
-        const sep = 46, mA = 1.0, mB = 0.8, mSum = mA + mB;
-        const rA = sep * mB / mSum, rB = sep * mA / mSum;
-        const vCircA = Math.sqrt(G2 * mB * mB / (mSum * sep));
-        const vCircB = Math.sqrt(G2 * mA * mA / (mSum * sep));
-        return {
-            sA: { x: W/2 - rA, y: H/2, vx: 0, vy: -vCircA, m: mA },
-            sB: { x: W/2 + rB, y: H/2, vx: 0, vy:  vCircB, m: mB },
-            mA, mB, mSum,
-        };
-    }
-
-    const stateEQ = makeBinary(EQ.W, EQ.H);
-    const statePO = makeBinary(PO.W, PO.H);
-
-    // 적도 궤도 행성
-    const eqOrb = 80;
-    let ep = { x: EQ.W/2 + eqOrb, y: EQ.H/2, vx: 0, vy: Math.sqrt(G2 * stateEQ.mSum / eqOrb) * 0.9, z: 0, vz: 0 };
-    // 극궤도 행성 (z축 속도 추가)
-    const poOrb = 80;
-    const poV = Math.sqrt(G2 * statePO.mSum / poOrb);
-    let pp = { x: PO.W/2 + poOrb, y: PO.H/2, vx: 0, vy: poV * 0.1, z: 0, vz: poV * 0.95 };
-
+    // 이진성 공전 반지름 (질량 중심 기준)
+    const rA = 17, rB = 21, RP = 80;
+    const TRAIL = 260;
     let eqTrail = [], poTrail = [];
+    let frame = 0;
 
-    function stepBody(bodies, dt) {
-        bodies.forEach((b, i) => {
-            let ax = 0, ay = 0, az = 0;
-            bodies.forEach((o, j) => {
-                if (i === j) return;
-                const dx = o.x - b.x, dy = o.y - b.y, dz = (o.z||0) - (b.z||0);
-                const r2 = dx*dx + dy*dy + dz*dz + 60;
-                const r  = Math.sqrt(r2);
-                const f  = G2 * o.m / r2;
-                ax += f*dx/r; ay += f*dy/r; az += f*dz/r;
-            });
-            b.vx += ax*dt; b.vy += ay*dt;
-            if (b.vz !== undefined) b.vz += az*dt;
-        });
-        bodies.forEach(b => {
-            b.x += b.vx*dt; b.y += b.vy*dt;
-            if (b.vz !== undefined) b.z += b.vz*dt;
+    // 배경별 (정적)
+    const bgStars = Array.from({ length: 28 }, (_, i) => ({
+        x1: (Math.sin(i * 43.7) * 0.5 + 0.5),
+        y1: (Math.sin(i * 97.3) * 0.5 + 0.5),
+        a:  (Math.sin(i * 17.1) * 0.3 + 0.5) * 0.35,
+    }));
+
+    function drawBg(ctx, W, H) {
+        bgStars.forEach(s => {
+            ctx.beginPath();
+            ctx.arc(s.x1 * W, s.y1 * H, 0.9, 0, TAU);
+            ctx.fillStyle = `rgba(180,210,255,${s.a})`;
+            ctx.fill();
         });
     }
 
-    function drawStarSmall(ctx, x, y, r, col) {
-        const g = ctx.createRadialGradient(x, y, 0, x, y, r*3);
-        g.addColorStop(0,'#fff'); g.addColorStop(0.4,col); g.addColorStop(1,'transparent');
-        ctx.beginPath(); ctx.arc(x,y,r*3,0,TAU); ctx.fillStyle=g; ctx.fill();
-        ctx.beginPath(); ctx.arc(x,y,r,0,TAU); ctx.fillStyle=col; ctx.fill();
+    function drawStars(ctx, cx, cy, ts) {
+        // 두 별: 수평면에서 공전 → 찌그러진 타원처럼 보임
+        const sAx = cx - rA * Math.cos(ts), sAy = cy - rA * Math.sin(ts) * 0.28;
+        const sBx = cx + rB * Math.cos(ts), sBy = cy + rB * Math.sin(ts) * 0.28;
+        [[sAx, sAy, '#ffe066', 7], [sBx, sBy, '#ff8844', 6]].forEach(([x, y, col, r]) => {
+            const g = ctx.createRadialGradient(x, y, 0, x, y, r * 3.5);
+            g.addColorStop(0, '#fff'); g.addColorStop(0.4, col); g.addColorStop(1, 'transparent');
+            ctx.beginPath(); ctx.arc(x, y, r * 3.5, 0, TAU); ctx.fillStyle = g; ctx.fill();
+            ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fillStyle = col; ctx.fill();
+        });
     }
 
-    function drawPlanetSmall(ctx, x, y, col) {
-        const g = ctx.createRadialGradient(x,y,0,x,y,8);
-        g.addColorStop(0,col); g.addColorStop(1,'transparent');
-        ctx.beginPath(); ctx.arc(x,y,8,0,TAU); ctx.fillStyle=g; ctx.fill();
-        ctx.beginPath(); ctx.arc(x,y,3.5,0,TAU); ctx.fillStyle=col; ctx.fill();
+    function drawPlanet(ctx, x, y, col) {
+        const g = ctx.createRadialGradient(x, y, 0, x, y, 13);
+        g.addColorStop(0, col); g.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(x, y, 13, 0, TAU); ctx.fillStyle = g; ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, 4.5, 0, TAU); ctx.fillStyle = col; ctx.fill();
+    }
+
+    function drawTrail(ctx, trail, cr, cg, cb) {
+        for (let i = 1; i < trail.length; i++) {
+            const a = (i / trail.length) * 0.55;
+            ctx.beginPath();
+            ctx.moveTo(trail[i-1].x, trail[i-1].y);
+            ctx.lineTo(trail[i].x,   trail[i].y);
+            ctx.strokeStyle = `rgba(${cr},${cg},${cb},${a.toFixed(2)})`;
+            ctx.lineWidth = 1.3;
+            ctx.stroke();
+        }
     }
 
     function animate() {
-        for (let i = 0; i < 4; i++) {
-            stepBody([stateEQ.sA, stateEQ.sB, ep], 0.01);
-            stepBody([statePO.sA, statePO.sB, pp], 0.01);
-        }
+        frame++;
+        const ts = frame * 0.018;   // 별 공전 각도
+        const tp = frame * 0.042;   // 행성 공전 각도
 
-        // 적도 궤도 그리기
+        // ── 적도 궤도: 별들과 동일 수평면 ──
         {
             const { ctx, W, H } = EQ;
-            ctx.fillStyle = 'rgba(2,5,16,0.3)'; ctx.fillRect(0,0,W,H);
-            eqTrail.push({ x: ep.x, y: ep.y });
-            if (eqTrail.length > 250) eqTrail.shift();
-            if (eqTrail.length > 2) {
-                ctx.beginPath();
-                eqTrail.forEach((p,i) => {
-                    if (i===0) ctx.moveTo(p.x,p.y);
-                    else ctx.lineTo(p.x,p.y);
-                });
-                ctx.strokeStyle = 'rgba(100,170,255,0.3)'; ctx.lineWidth=1; ctx.stroke();
-            }
-            drawStarSmall(ctx, stateEQ.sA.x, stateEQ.sA.y, 7, '#ffe066');
-            drawStarSmall(ctx, stateEQ.sB.x, stateEQ.sB.y, 6, '#ff8844');
-            drawPlanetSmall(ctx, ep.x, ep.y, '#66aaff');
+            const cx = W/2, cy = H/2;
+            ctx.fillStyle = 'rgba(2,5,16,0.38)'; ctx.fillRect(0, 0, W, H);
+            drawBg(ctx, W, H);
+
+            // XY 평면 → 위에서 비스듬히 봐서 납작한 타원
+            const px = cx + RP * Math.cos(tp);
+            const py = cy + RP * Math.sin(tp) * 0.26;
+
+            eqTrail.push({ x: px, y: py });
+            if (eqTrail.length > TRAIL) eqTrail.shift();
+            drawTrail(ctx, eqTrail, 100, 170, 255);
+            drawStars(ctx, cx, cy, ts);
+            drawPlanet(ctx, px, py, '#66aaff');
+
+            ctx.fillStyle = 'rgba(120,170,230,0.65)';
+            ctx.font = '10px system-ui'; ctx.textAlign = 'center';
+            ctx.fillText('납작한 궤도 — 별들과 같은 평면', cx, H - 10);
         }
 
-        // 극궤도 그리기 (z를 y오프셋으로 투영)
+        // ── 극궤도: 별들의 위아래를 통과하는 수직면 ──
         {
             const { ctx, W, H } = PO;
-            ctx.fillStyle = 'rgba(2,5,16,0.3)'; ctx.fillRect(0,0,W,H);
-            const projY = pp.y + pp.z * 0.5;
-            poTrail.push({ x: pp.x, y: projY });
-            if (poTrail.length > 400) poTrail.shift();
-            if (poTrail.length > 2) {
-                ctx.beginPath();
-                poTrail.forEach((p,i) => {
-                    if (i===0) ctx.moveTo(p.x,p.y);
-                    else ctx.lineTo(p.x,p.y);
-                });
-                ctx.strokeStyle = 'rgba(200,140,255,0.3)'; ctx.lineWidth=1; ctx.stroke();
-            }
-            // z 투영 수직선
-            ctx.beginPath(); ctx.moveTo(pp.x, pp.y); ctx.lineTo(pp.x, projY);
-            ctx.strokeStyle='rgba(150,100,255,0.2)'; ctx.lineWidth=1;
-            ctx.setLineDash([2,3]); ctx.stroke(); ctx.setLineDash([]);
+            const cx = W/2, cy = H/2;
+            ctx.fillStyle = 'rgba(2,5,16,0.38)'; ctx.fillRect(0, 0, W, H);
+            drawBg(ctx, W, H);
 
-            drawStarSmall(ctx, statePO.sA.x, statePO.sA.y, 7, '#ffe066');
-            drawStarSmall(ctx, statePO.sB.x, statePO.sB.y, 6, '#ff8844');
-            drawPlanetSmall(ctx, pp.x, projY, '#cc88ff');
+            // XZ 평면 → X는 조금, Z는 위아래로 크게
+            const px = cx + RP * Math.cos(tp) * 0.28;
+            const py = cy - RP * Math.sin(tp) * 0.93;
+
+            poTrail.push({ x: px, y: py });
+            if (poTrail.length > TRAIL) poTrail.shift();
+            drawTrail(ctx, poTrail, 200, 140, 255);
+            drawStars(ctx, cx, cy, ts);
+            drawPlanet(ctx, px, py, '#cc88ff');
+
+            ctx.fillStyle = 'rgba(180,140,220,0.65)';
+            ctx.font = '10px system-ui'; ctx.textAlign = 'center';
+            ctx.fillText('극궤도 — 별들의 위아래를 통과', cx, H - 10);
         }
 
         requestAnimationFrame(animate);
@@ -492,27 +484,31 @@ function initCanvas(id) {
     animate();
 })();
 
-// ── 섹션 4: 미니 이진성 데모 ─────────────────────────────────────────────
+// ── 섹션 4: 미니 이진성 데모 (물리 시뮬레이션) ──────────────────────────
 (function() {
     const { c, ctx, W, H } = initCanvas('c3');
-    const G3 = 700;
+    const G3 = 6000;  // 빠른 시각화를 위해 큰 값
     const cx  = W/2, cy = H/2;
 
-    // 이진성 초기화
+    // 배경별 (정적)
+    const bgStars = Array.from({ length: 50 }, (_, i) => ({
+        x: (Math.sin(i * 43.7) * 0.5 + 0.5) * W,
+        y: (Math.sin(i * 97.3) * 0.5 + 0.5) * H,
+    }));
+
     function makeState() {
-        const sep = 70, mA = 1.0, mB = 0.8, mSum = mA + mB;
-        const rA = sep*mB/mSum, rB = sep*mA/mSum;
-        const vCA = Math.sqrt(G3*mB*mB/(mSum*sep));
-        const vCB = Math.sqrt(G3*mA*mA/(mSum*sep));
+        const sep = 40, mA = 1.0, mB = 0.8, mSum = mA + mB;
+        const rA  = sep * mB / mSum;
+        const rB  = sep * mA / mSum;
+        const vCA = Math.sqrt(G3 * mB * mB / (mSum * sep));
+        const vCB = Math.sqrt(G3 * mA * mA / (mSum * sep));
+        const pR  = sep * 2.25;
+        const vP  = Math.sqrt(G3 * mSum / pR);
         return {
-            sA: { x: cx-rA, y: cy, vx:0, vy:-vCA, m: mA },
-            sB: { x: cx+rB, y: cy, vx:0, vy: vCB, m: mB },
-            p:  {
-                x: cx + sep*2.3, y: cy,
-                vx: 0, vy: Math.sqrt(G3*(mA+mB)/(sep*2.3))*0.92,
-                z: 0, vz: Math.sqrt(G3*(mA+mB)/(sep*2.3))*0.38,
-                m: 0.001
-            },
+            sA: { x: cx - rA, y: cy, vx: 0,  vy: -vCA, m: mA },
+            sB: { x: cx + rB, y: cy, vx: 0,  vy:  vCB, m: mB },
+            p:  { x: cx + pR, y: cy, z: 0,
+                  vx: 0, vy: vP * 0.88, vz: vP * 0.42, m: 0.001 },
             trail: [],
         };
     }
@@ -520,48 +516,49 @@ function initCanvas(id) {
     let state = makeState();
 
     function stepAll(dt) {
-        const bs = [state.sA, state.sB, state.p];
-        bs.forEach((b,i) => {
-            let ax=0, ay=0, az=0;
-            bs.forEach((o,j) => {
-                if (i===j) return;
-                const dx=o.x-b.x, dy=o.y-b.y, dz=(o.z||0)-(b.z||0);
-                const r2=dx*dx+dy*dy+dz*dz+80;
-                const r=Math.sqrt(r2), f=G3*o.m/r2;
-                ax+=f*dx/r; ay+=f*dy/r; az+=f*dz/r;
-            });
-            b.vx+=ax*dt; b.vy+=ay*dt;
-            if (b.vz!==undefined) b.vz+=az*dt;
+        // 별들은 서로만의 중력으로 공전 (행성 질량 무시)
+        [0, 1].forEach(i => {
+            const b = i === 0 ? state.sA : state.sB;
+            const o = i === 0 ? state.sB : state.sA;
+            const dx = o.x - b.x, dy = o.y - b.y;
+            const r  = Math.sqrt(dx*dx + dy*dy + 80);
+            const f  = G3 * o.m / (r * r);
+            b.vx += f * dx/r * dt;
+            b.vy += f * dy/r * dt;
         });
-        bs.forEach(b => {
-            b.x+=b.vx*dt; b.y+=b.vy*dt;
-            if (b.vz!==undefined) b.z+=b.vz*dt;
+
+        // 행성: 두 별의 중력을 받음
+        const p = state.p;
+        let ax = 0, ay = 0, az = 0;
+        [state.sA, state.sB].forEach(s => {
+            const dx = s.x - p.x, dy = s.y - p.y, dz = -p.z;
+            const r  = Math.sqrt(dx*dx + dy*dy + dz*dz + 80);
+            const f  = G3 * s.m / (r * r);
+            ax += f * dx/r; ay += f * dy/r; az += f * dz/r;
         });
+        p.vx += ax*dt; p.vy += ay*dt; p.vz += az*dt;
+
+        state.sA.x += state.sA.vx*dt; state.sA.y += state.sA.vy*dt;
+        state.sB.x += state.sB.vx*dt; state.sB.y += state.sB.vy*dt;
+        p.x += p.vx*dt; p.y += p.vy*dt; p.z += p.vz*dt;
     }
 
-    let frame = 0;
-
     function animate() {
-        frame++;
-
-        // 화면 이탈 시 리셋
         const p = state.p;
-        if (Math.abs(p.x - cx) > W * 0.75 || Math.abs(p.y - cy) > H * 0.75) {
+
+        // 행성 이탈 시 리셋
+        if (Math.abs(p.x - cx) > W * 0.65 || Math.abs(p.y + p.z*0.4 - cy) > H * 0.65) {
             state = makeState();
         }
 
-        for (let i = 0; i < 5; i++) stepAll(0.009);
+        // 15 스텝/프레임으로 빠른 시각화
+        for (let i = 0; i < 15; i++) stepAll(0.012);
 
-        ctx.fillStyle = 'rgba(2,5,16,0.28)'; ctx.fillRect(0,0,W,H);
+        ctx.fillStyle = 'rgba(2,5,16,0.28)'; ctx.fillRect(0, 0, W, H);
 
-        // 별들
-        const bgSt = Array.from({length:50},(_,i)=>({
-            x:(Math.sin(i*43.7)*0.5+0.5)*W,
-            y:(Math.sin(i*97.3)*0.5+0.5)*H,
-        }));
-        bgSt.forEach(s=>{
-            ctx.beginPath(); ctx.arc(s.x,s.y,0.8,0,TAU);
-            ctx.fillStyle='rgba(180,210,255,0.25)'; ctx.fill();
+        bgStars.forEach(s => {
+            ctx.beginPath(); ctx.arc(s.x, s.y, 0.8, 0, TAU);
+            ctx.fillStyle = 'rgba(180,210,255,0.25)'; ctx.fill();
         });
 
         const py = p.y + p.z * 0.4;
@@ -571,37 +568,40 @@ function initCanvas(id) {
         // 궤적
         if (state.trail.length > 2) {
             ctx.beginPath();
-            state.trail.forEach((pt,i) => {
-                const a = (i/state.trail.length)*0.6;
-                if (i===0) ctx.moveTo(pt.x,pt.y);
-                else ctx.lineTo(pt.x,pt.y);
+            state.trail.forEach((pt, i) => {
+                if (i === 0) ctx.moveTo(pt.x, pt.y);
+                else ctx.lineTo(pt.x, pt.y);
             });
-            ctx.strokeStyle='rgba(150,130,255,0.35)'; ctx.lineWidth=1.2; ctx.stroke();
+            ctx.strokeStyle = 'rgba(180,140,255,0.4)';
+            ctx.lineWidth = 1.2; ctx.stroke();
         }
 
-        // 별A
-        const gA=ctx.createRadialGradient(state.sA.x,state.sA.y,0,state.sA.x,state.sA.y,36);
-        gA.addColorStop(0,'rgba(255,220,80,0.6)'); gA.addColorStop(1,'transparent');
-        ctx.beginPath(); ctx.arc(state.sA.x,state.sA.y,36,0,TAU); ctx.fillStyle=gA; ctx.fill();
-        ctx.beginPath(); ctx.arc(state.sA.x,state.sA.y,10,0,TAU); ctx.fillStyle='#ffe066'; ctx.fill();
+        // 별 A
+        const gA = ctx.createRadialGradient(state.sA.x, state.sA.y, 0, state.sA.x, state.sA.y, 34);
+        gA.addColorStop(0, 'rgba(255,220,80,0.65)'); gA.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(state.sA.x, state.sA.y, 34, 0, TAU); ctx.fillStyle = gA; ctx.fill();
+        ctx.beginPath(); ctx.arc(state.sA.x, state.sA.y, 10, 0, TAU); ctx.fillStyle = '#ffe066'; ctx.fill();
 
-        // 별B
-        const gB=ctx.createRadialGradient(state.sB.x,state.sB.y,0,state.sB.x,state.sB.y,28);
-        gB.addColorStop(0,'rgba(255,120,40,0.6)'); gB.addColorStop(1,'transparent');
-        ctx.beginPath(); ctx.arc(state.sB.x,state.sB.y,28,0,TAU); ctx.fillStyle=gB; ctx.fill();
-        ctx.beginPath(); ctx.arc(state.sB.x,state.sB.y,8,0,TAU); ctx.fillStyle='#ff8844'; ctx.fill();
+        // 별 B
+        const gB = ctx.createRadialGradient(state.sB.x, state.sB.y, 0, state.sB.x, state.sB.y, 26);
+        gB.addColorStop(0, 'rgba(255,120,40,0.65)'); gB.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(state.sB.x, state.sB.y, 26, 0, TAU); ctx.fillStyle = gB; ctx.fill();
+        ctx.beginPath(); ctx.arc(state.sB.x, state.sB.y, 8,  0, TAU); ctx.fillStyle = '#ff8844'; ctx.fill();
 
-        // z선 + 행성
-        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x,py);
-        ctx.strokeStyle='rgba(180,140,255,0.25)'; ctx.lineWidth=1;
-        ctx.setLineDash([2,3]); ctx.stroke(); ctx.setLineDash([]);
-        const gP=ctx.createRadialGradient(p.x,py,0,p.x,py,14);
-        gP.addColorStop(0,'rgba(180,140,255,0.7)'); gP.addColorStop(1,'transparent');
-        ctx.beginPath(); ctx.arc(p.x,py,14,0,TAU); ctx.fillStyle=gP; ctx.fill();
-        ctx.beginPath(); ctx.arc(p.x,py,5,0,TAU); ctx.fillStyle='#cc99ff'; ctx.fill();
+        // Z 투영선
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, py);
+        ctx.strokeStyle = 'rgba(180,140,255,0.25)'; ctx.lineWidth = 1;
+        ctx.setLineDash([2, 3]); ctx.stroke(); ctx.setLineDash([]);
 
-        ctx.fillStyle='rgba(100,140,200,0.5)'; ctx.font='11px system-ui'; ctx.textAlign='center';
-        ctx.fillText('행성이 그리는 복잡한 극궤도 패턴', W/2, H-14);
+        // 행성
+        const gP = ctx.createRadialGradient(p.x, py, 0, p.x, py, 14);
+        gP.addColorStop(0, 'rgba(180,140,255,0.85)'); gP.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(p.x, py, 14, 0, TAU); ctx.fillStyle = gP; ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x, py,  5, 0, TAU); ctx.fillStyle = '#cc99ff'; ctx.fill();
+
+        ctx.fillStyle = 'rgba(100,140,200,0.55)';
+        ctx.font = '11px system-ui'; ctx.textAlign = 'center';
+        ctx.fillText('극궤도 행성이 그리는 복잡한 패턴', W/2, H - 14);
 
         requestAnimationFrame(animate);
     }
