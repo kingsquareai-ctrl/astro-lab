@@ -1,22 +1,27 @@
 const canvas = document.getElementById('canvas');
 const ctx    = canvas.getContext('2d');
 
-// ── 물리 상수 (시뮬레이션 단위) ──
-const G = 800;   // 중력 상수 (픽셀 스케일)
-const DT_BASE = 0.1;
+// ── 물리 상수 ──
+const G = 800;
+const DT_BASE = 5.0;   // 별은 해석적 원운동이라 큰 dt 사용 가능
 
 // ── 상태 ──
 let W, H, cx, cy;
 let massA  = 1.0;
 let massB  = 0.7;
 let speed  = 2.0;
-let tilt   = 75;   // 행성 궤도 기울기 (도)
+let tilt   = 75;
 let showTrail = true;
 
 let starA, starB, planet;
 let trailPlanet = [];
 let trailA = [], trailB = [];
 let bgStars = [];
+
+// 이진성 해석적 공전을 위한 상태
+let binAngle = 0;   // 현재 공전 각도 (라디안)
+let binOmega = 0;   // 각속도 (rad/sim-time)
+let binSep = 0, binRa = 0, binRb = 0;
 
 // ── 배경별 생성 ──
 function initBgStars() {
@@ -28,41 +33,45 @@ function initBgStars() {
     }));
 }
 
-// ── 별 초기화 (질량 변경 시 별만 재설정) ──
-function initStars() {
-    const sep  = Math.min(W, H) * 0.18;
-    const mSum = massA + massB;
-    const rA = sep * massB / mSum;
-    const rB = sep * massA / mSum;
-    const vCircA = Math.sqrt(G * massB * massB / (mSum * sep));
-    const vCircB = Math.sqrt(G * massA * massA / (mSum * sep));
+// ── 별 위치를 각도로 계산 ──
+function placeStars() {
+    starA.x = cx - binRa * Math.cos(binAngle);
+    starA.y = cy - binRa * Math.sin(binAngle);
+    starB.x = cx + binRb * Math.cos(binAngle);
+    starB.y = cy + binRb * Math.sin(binAngle);
+}
 
-    starA = { x: cx - rA, y: cy, vx: 0, vy: -vCircA, m: massA, r: 12 + massA * 6 };
-    starB = { x: cx + rB, y: cy, vx: 0, vy:  vCircB, m: massB, r: 10 + massB * 5 };
+// ── 별 초기화 ──
+function initStars() {
+    binSep = Math.min(W, H) * 0.18;
+    const mSum = massA + massB;
+    binRa = binSep * massB / mSum;
+    binRb = binSep * massA / mSum;
+    // 케플러 3법칙으로 각속도 계산
+    binOmega = Math.sqrt(G * mSum / (binSep * binSep * binSep));
+    binAngle = 0;
+
+    starA = { m: massA, r: 12 + massA * 6, x: 0, y: 0 };
+    starB = { m: massB, r: 10 + massB * 5, x: 0, y: 0 };
+    placeStars();
     trailA = [];
     trailB = [];
     trailPlanet = [];
 }
 
-// ── 행성 초기화 (기울기 변경 또는 전체 리셋 시) ──
+// ── 행성 초기화 ──
 function initPlanet() {
-    const sep  = Math.min(W, H) * 0.18;
     const mSum = massA + massB;
-
-    // 총 질량이 클수록 더 넓은 안정 궤도 → 질량 변경 시 즉시 크기 차이 확인 가능
-    const pOrbit = sep * (1.6 + mSum * 0.38);
+    const pOrbit = binSep * (1.6 + mSum * 0.38);
     const tiltRad = (tilt * Math.PI) / 180;
     const vPlanet = Math.sqrt(G * mSum / pOrbit);
 
     planet = {
-        x:  cx + pOrbit,
-        y:  cy,
+        x: cx + pOrbit, y: cy, z: 0,
         vx: 0,
         vy: vPlanet * Math.cos(tiltRad),
         vz: vPlanet * Math.sin(tiltRad),
-        z:  0,
-        m: 0.001,
-        r: 5,
+        m: 0.001, r: 5,
     };
     trailPlanet = [];
 }
@@ -73,54 +82,34 @@ function initBodies() {
     initPlanet();
 }
 
-// ── 물리 업데이트 (RK2 적분) ──
-function accel(bodies, idx) {
-    const b = bodies[idx];
-    let ax = 0, ay = 0;
-    for (let i = 0; i < bodies.length; i++) {
-        if (i === idx) continue;
-        const o  = bodies[i];
-        const dx = o.x - b.x;
-        const dy = o.y - b.y;
-        // z 성분 포함 거리 (행성의 경우)
-        const dz = (o.z || 0) - (b.z || 0);
-        const r2 = dx*dx + dy*dy + dz*dz + 100; // softening
-        const r  = Math.sqrt(r2);
-        const f  = G * o.m / r2;
-        ax += f * dx / r;
-        ay += f * dy / r;
-    }
-    return { ax, ay };
-}
-
+// ── 물리 스텝 ──
+// 별: 해석적 원운동 (적분 오차 없음)
+// 행성: 오일러 수치 적분
 function step(dt) {
-    const bodies = [starA, starB, planet];
+    // 별 위치를 각도로 직접 계산
+    binAngle += binOmega * dt;
+    placeStars();
 
-    // 각 천체 가속도 계산 후 속도/위치 업데이트 (Euler)
-    bodies.forEach((b, i) => {
-        const { ax, ay } = accel(bodies, i);
-        b.vx += ax * dt;
-        b.vy += ay * dt;
-    });
-
-    // 행성 z축 속도 (중력으로 인한 z 변화 없음 - 단순 자유 운동)
-    // 두 별의 z 중력도 포함
-    let pazAccel = 0;
+    // 행성에 작용하는 두 별의 중력
+    let ax = 0, ay = 0, az = 0;
     [starA, starB].forEach(s => {
         const dx = s.x - planet.x;
         const dy = s.y - planet.y;
-        const dz = (s.z || 0) - planet.z;
+        const dz = -planet.z;          // 별들은 z=0 평면에 있음
         const r2 = dx*dx + dy*dy + dz*dz + 100;
         const r  = Math.sqrt(r2);
-        pazAccel += G * s.m / r2 * dz / r;
+        const f  = G * s.m / r2;
+        ax += f * dx / r;
+        ay += f * dy / r;
+        az += f * dz / r;
     });
-    planet.vz += pazAccel * dt;
-    planet.z  += planet.vz * dt;
 
-    bodies.forEach(b => {
-        b.x += b.vx * dt;
-        b.y += b.vy * dt;
-    });
+    planet.vx += ax * dt;
+    planet.vy += ay * dt;
+    planet.vz += az * dt;
+    planet.x  += planet.vx * dt;
+    planet.y  += planet.vy * dt;
+    planet.z  += planet.vz * dt;
 }
 
 // ── 그리기 ──
@@ -181,7 +170,7 @@ function render() {
     const dt = DT_BASE * speed;
 
     // 물리 업데이트 (여러 스텝)
-    for (let i = 0; i < 25; i++) step(dt);
+    for (let i = 0; i < 50; i++) step(dt);
 
     // 궤적 기록
     const TRAIL = 600;
