@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>블랙홀 중력 렌즈 — 이해하기 | Astro Lab</title>
+    <link rel="stylesheet" href="../learn.css">
+</head>
+<body>
+
+<nav class="topbar">
+    <a href="../">← Astro Lab</a>
+    <span class="title">블랙홀 중력 렌즈 이해하기</span>
+    <a href="./">시뮬레이션 체험 →</a>
+</nav>
+
+<nav class="side-nav" id="sideNav">
+    <div class="side-dot active" data-sec="0"></div>
+    <div class="side-dot" data-sec="1"></div>
+    <div class="side-dot" data-sec="2"></div>
+    <div class="side-dot" data-sec="3"></div>
+</nav>
+
+<!-- ── 섹션 1: 빛은 직선으로 이동한다 ── -->
+<section class="learn-section" id="sec0">
+    <div class="content">
+        <div class="text">
+            <div class="step-badge">01 / 기본 원리</div>
+            <h2>빛은 원래<br>직선으로 이동한다</h2>
+            <p>
+                진공 속에서 빛(광자)은 항상 <strong>가장 짧은 경로</strong>인 직선을 따라 이동합니다.
+                별에서 출발한 빛은 우주를 가로질러 관측자의 눈에 직선으로 도달합니다.
+            </p>
+            <p>
+                이것이 우리가 별의 위치를 정확히 알 수 있는 이유입니다.
+                빛이 온 방향을 거슬러 올라가면 별이 있는 위치가 됩니다.
+            </p>
+            <p>
+                오른쪽 애니메이션에서 별(노란 점)에서 출발한 광자들이
+                <strong>관측자에게 일직선으로</strong> 도달하는 것을 확인하세요.
+            </p>
+        </div>
+        <div class="viz">
+            <canvas id="c0" width="520" height="300"></canvas>
+            <div class="viz-label">
+                <span><span class="dot-sm" style="background:#ffe066"></span> 별</span>
+                <span><span class="dot-sm" style="background:#88ccff"></span> 광자</span>
+                <span><span class="dot-sm" style="background:#aaccff;border-radius:2px"></span> 관측자</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── 섹션 2: 중력이 빛을 휘게 한다 ── -->
+<section class="learn-section" id="sec1">
+    <div class="content">
+        <div class="text">
+            <div class="step-badge">02 / 중력 렌즈</div>
+            <h2>강한 중력이<br>빛의 경로를 휘게 한다</h2>
+            <p>
+                아인슈타인의 <strong>일반 상대성이론</strong>에 따르면, 질량이 있는 천체는
+                주변 시공간을 휘게 만듭니다. 빛은 이 굽어진 시공간을 따라 이동하기 때문에
+                경로가 휘어집니다.
+            </p>
+            <p>
+                블랙홀은 극도로 강한 중력을 가지므로 가까이 지나는 빛을
+                <strong>크게 굴절</strong>시킵니다. 너무 가까이 지나는 빛은
+                탈출하지 못하고 블랙홀에 흡수됩니다(사건의 지평선).
+            </p>
+            <p>
+                빛이 블랙홀을 지나면서 굴절되는 각도는
+                블랙홀에 얼마나 가까이 접근하느냐에 따라 달라집니다.
+            </p>
+            <div class="compare-label">
+                <span>🔵 크게 굴절 (근접)</span>
+                <span>⚪ 약간 굴절 (원거리)</span>
+                <span>⛔ 흡수 (지평선 내)</span>
+            </div>
+        </div>
+        <div class="viz">
+            <canvas id="c1" width="520" height="300"></canvas>
+            <div class="viz-label">
+                <span><span class="dot-sm" style="background:#ffe066"></span> 별</span>
+                <span><span class="dot-sm" style="background:#111;border:1px solid #ff8833"></span> 블랙홀</span>
+                <span><span class="dot-sm" style="background:#88ccff"></span> 굴절 광자</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── 섹션 3: 아인슈타인 링 ── -->
+<section class="learn-section" id="sec2">
+    <div class="content">
+        <div class="text">
+            <div class="step-badge">03 / 아인슈타인 링</div>
+            <h2>별이 블랙홀 뒤에 오면<br>빛이 링으로 보인다</h2>
+            <p>
+                별, 블랙홀, 관측자가 <strong>완벽하게 일직선</strong>으로 정렬되면
+                별빛이 블랙홀 주위 모든 방향으로 동일하게 굴절되어
+                <strong>원형의 밝은 링</strong>으로 보입니다. 이를 <strong>아인슈타인 링</strong>이라 합니다.
+            </p>
+            <p>
+                정확히 정렬되지 않으면 두 개의 호(arc)나 점으로 분리되어 보이고,
+                별이 서서히 블랙홀 뒤로 이동할수록 호가 점점 연결되어 완전한 링이 됩니다.
+            </p>
+            <p>
+                오른쪽 애니메이션에서 별이 블랙홀 뒤를 천천히 통과하면서
+                이미지가 변하는 것을 관찰하세요.
+            </p>
+        </div>
+        <div class="viz">
+            <canvas id="c2" width="520" height="340"></canvas>
+            <div class="viz-label">
+                <span><span class="dot-sm" style="background:#ffe066"></span> 실제 별 위치</span>
+                <span><span class="dot-sm" style="background:#ffaa44"></span> 렌즈 이미지</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ── 섹션 4: 시뮬레이션 체감 방법 ── -->
+<section class="learn-section" id="sec3">
+    <div class="content">
+        <div class="text">
+            <div class="step-badge">04 / 직접 체험</div>
+            <h2>시뮬레이션에서<br>이렇게 체험해보세요</h2>
+
+            <div class="tips">
+                <div class="tip">
+                    <div class="tip-icon">🔍</div>
+                    <div class="tip-body">
+                        <strong>왜곡 범위 확인</strong>
+                        <p>질량 슬라이더를 최대(3.0M)로 올린 뒤 화면 중앙에서 블랙홀을 드래그하세요.
+                        넓은 범위의 별들이 한꺼번에 휘어지는 것이 보입니다.</p>
+                    </div>
+                </div>
+                <div class="tip">
+                    <div class="tip-icon">⭕</div>
+                    <div class="tip-body">
+                        <strong>아인슈타인 링 만들기</strong>
+                        <p>밝은 별 바로 위에 블랙홀을 천천히 올려놓으면 그 별이 점에서 호로,
+                        그리고 완전한 원형 링으로 변하는 순간을 포착할 수 있습니다.</p>
+                    </div>
+                </div>
+                <div class="tip">
+                    <div class="tip-icon">⚫</div>
+                    <div class="tip-body">
+                        <strong>사건의 지평선 관찰</strong>
+                        <p>슈바르츠실트 반지름 표시를 켜면 파란 경계선 안쪽의 별빛이 완전히 사라지는
+                        것을 확인할 수 있습니다. 이 안쪽이 빛조차 탈출 못 하는 영역입니다.</p>
+                    </div>
+                </div>
+                <div class="tip">
+                    <div class="tip-icon">🌟</div>
+                    <div class="tip-body">
+                        <strong>질량 vs 왜곡 비교</strong>
+                        <p>같은 위치에서 질량을 0.3 → 3.0으로 천천히 올려보세요.
+                        질량이 클수록 왜곡 반경이 넓어지고 렌즈 효과가 강해집니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <a href="./" class="sim-btn">시뮬레이션 직접 체험하기 →</a>
+        </div>
+        <div class="viz">
+            <canvas id="c3" width="520" height="380"></canvas>
+        </div>
+    </div>
+</section>
+
+<script>
+// ── 유틸 ──────────────────────────────────────────────────────────────────
+const TAU = Math.PI * 2;
+
+function initCanvas(id) {
+    const c = document.getElementById(id);
+    const ctx = c.getContext('2d');
+    return { c, ctx, W: c.width, H: c.height };
+}
+
+// ── 섹션 1: 직선 광자 ────────────────────────────────────────────────────
+(function() {
+    const { c, ctx, W, H } = initCanvas('c0');
+    const starX = 70, starY = H / 2;
+    const obsX  = W - 50;
+
+    const photons = [
+        { t: 0.0, y: H/2 - 60 },
+        { t: 0.2, y: H/2 - 30 },
+        { t: 0.4, y: H/2 },
+        { t: 0.6, y: H/2 + 30 },
+        { t: 0.8, y: H/2 + 60 },
+    ].map(p => ({ ...p, baseY: p.y, trail: [] }));
+
+    function drawBgStars(seed) {
+        for (let i = 0; i < 60; i++) {
+            const hx = Math.sin(seed * 127.1 + i * 43.7) * 0.5 + 0.5;
+            const hy = Math.sin(seed * 311.7 + i * 97.3) * 0.5 + 0.5;
+            const r  = (Math.sin(seed * 89.3 + i) * 0.5 + 0.5) * 1.0 + 0.3;
+            const a  = (Math.sin(seed * 53.1 + i * 17) * 0.5 + 0.5) * 0.5 + 0.2;
+            ctx.beginPath();
+            ctx.arc(hx * W, hy * H, r, 0, TAU);
+            ctx.fillStyle = `rgba(180,210,255,${a})`;
+            ctx.fill();
+        }
+    }
+
+    function drawStar(x, y, r, col) {
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r * 3.5);
+        g.addColorStop(0, '#ffffff');
+        g.addColorStop(0.35, col);
+        g.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(x, y, r * 3.5, 0, TAU);
+        ctx.fillStyle = g; ctx.fill();
+        ctx.beginPath(); ctx.arc(x, y, r, 0, TAU);
+        ctx.fillStyle = '#fff'; ctx.fill();
+    }
+
+    function drawObserver(x, y) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(150,200,255,0.25)';
+        ctx.strokeStyle = 'rgba(150,200,255,0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.ellipse(x, y, 18, 11, 0, 0, TAU);
+        ctx.fill(); ctx.stroke();
+        // 동공
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, TAU);
+        ctx.fillStyle = 'rgba(100,160,255,0.8)'; ctx.fill();
+        ctx.fillStyle = '#aaccff';
+        ctx.font = '10px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('관측자', x, y + 24);
+        ctx.restore();
+    }
+
+    let frame = 0;
+    function animate() {
+        frame++;
+        ctx.fillStyle = 'rgba(2,5,16,1)';
+        ctx.fillRect(0, 0, W, H);
+        drawBgStars(1);
+
+        const t = frame * 0.008;
+
+        // 별에서 관측자까지 직선 궤도선
+        photons.forEach(p => {
+            ctx.beginPath();
+            ctx.moveTo(starX + 15, p.baseY);
+            ctx.lineTo(obsX - 22, p.baseY);
+            ctx.strokeStyle = 'rgba(100,160,255,0.08)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        });
+
+        // 광자 이동
+        photons.forEach((p, i) => {
+            const phase = (t + p.t) % 1;
+            const px = starX + 15 + (obsX - 22 - starX - 15) * phase;
+            const py = p.baseY;
+
+            // 꼬리
+            ctx.beginPath();
+            for (let j = 0; j < 12; j++) {
+                const fp = Math.max(0, phase - j * 0.018);
+                const tx2 = starX + 15 + (obsX - 22 - starX - 15) * fp;
+                if (j === 0) ctx.moveTo(tx2, py);
+                else ctx.lineTo(tx2, py);
+            }
+            ctx.strokeStyle = `rgba(136,204,255,${0.5 - i * 0.04})`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // 광자 본체
+            ctx.beginPath();
+            ctx.arc(px, py, 3, 0, TAU);
+            ctx.fillStyle = '#88ccff';
+            ctx.fill();
+        });
+
+        drawStar(starX, starY, 6, '#ffe066');
+        drawObserver(obsX, H / 2);
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+
+// ── 섹션 2: 굴절 광자 ────────────────────────────────────────────────────
+(function() {
+    const { c, ctx, W, H } = initCanvas('c1');
+    const starX = 60,  starY = H / 2;
+    const obsX  = W - 50, obsY = H / 2;
+    const bhX   = W / 2, bhY = H / 2;
+    const RS = 22;
+
+    // 광자 경로 데이터: [시작Y, 제어점 Y 오프셋, 도착Y, 흡수여부, 색상]
+    const paths = [
+        { sy: H/2 - 90, cy: H/2 - 70, ey: H/2 - 115, absorbed: false, col: '#88ccff' },
+        { sy: H/2 - 50, cy: H/2 - 30, ey: H/2 - 72,  absorbed: false, col: '#aaddff' },
+        { sy: H/2 - 15, cy: H/2 + 0,  ey: H/2 - 30,  absorbed: false, col: '#cceeFF' },
+        { sy: H/2,      cy: H/2,       ey: null,       absorbed: true,  col: '#ff8844' },
+        { sy: H/2 + 15, cy: H/2 - 0,  ey: H/2 + 30,  absorbed: false, col: '#cceeFF' },
+        { sy: H/2 + 50, cy: H/2 + 30, ey: H/2 + 72,  absorbed: false, col: '#aaddff' },
+        { sy: H/2 + 90, cy: H/2 + 70, ey: H/2 + 115, absorbed: false, col: '#88ccff' },
+    ];
+
+    let frame = 0;
+
+    function getPoint(p, t) {
+        // 2세그먼트 곡선: 왼쪽(직선) → 오른쪽(굴절)
+        const mid = bhX;
+        if (t < 0.5) {
+            const lt = t * 2;
+            return {
+                x: starX + (mid - starX) * lt,
+                y: p.sy + (p.cy - p.sy) * lt,
+            };
+        } else {
+            if (p.absorbed) {
+                const rt = (t - 0.5) * 2;
+                return {
+                    x: mid + (bhX - mid) * rt,
+                    y: p.cy + (bhY - p.cy) * rt,
+                };
+            }
+            const rt = (t - 0.5) * 2;
+            return {
+                x: mid + (obsX - mid) * rt,
+                y: p.cy + (p.ey - p.cy) * rt,
+            };
+        }
+    }
+
+    function animate() {
+        frame++;
+        ctx.fillStyle = '#020510';
+        ctx.fillRect(0, 0, W, H);
+
+        const t = (frame * 0.006) % 1;
+
+        // 굴절 전 경로선
+        paths.forEach(p => {
+            if (p.absorbed) return;
+            ctx.beginPath();
+            ctx.moveTo(starX + 12, p.sy);
+            ctx.lineTo(bhX, p.cy);
+            ctx.lineTo(obsX - 20, p.ey);
+            ctx.strokeStyle = 'rgba(100,160,255,0.07)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([4, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        });
+
+        // 블랙홀 글로우
+        const g = ctx.createRadialGradient(bhX, bhY, RS, bhX, bhY, RS * 6);
+        g.addColorStop(0, 'rgba(255,120,30,0.35)');
+        g.addColorStop(0.4, 'rgba(255,80,10,0.08)');
+        g.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(bhX, bhY, RS * 6, 0, TAU);
+        ctx.fillStyle = g; ctx.fill();
+
+        // 광자 이동
+        paths.forEach(p => {
+            const phase = (t + (p.sy / H) * 0.3) % 1;
+            if (p.absorbed && phase > 0.65) return;
+
+            const pt = getPoint(p, phase);
+
+            // 꼬리
+            ctx.beginPath();
+            for (let j = 0; j < 14; j++) {
+                const fp = Math.max(0, phase - j * 0.016);
+                const pp = getPoint(p, fp);
+                if (j === 0) ctx.moveTo(pp.x, pp.y);
+                else ctx.lineTo(pp.x, pp.y);
+            }
+            ctx.strokeStyle = p.absorbed
+                ? `rgba(255,136,68,0.6)`
+                : `rgba(136,204,255,0.55)`;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(pt.x, pt.y, 2.5, 0, TAU);
+            ctx.fillStyle = p.absorbed ? '#ff8844' : '#88ccff';
+            ctx.fill();
+        });
+
+        // 블랙홀
+        ctx.beginPath(); ctx.arc(bhX, bhY, RS, 0, TAU);
+        ctx.fillStyle = '#000'; ctx.fill();
+        ctx.beginPath(); ctx.arc(bhX, bhY, RS + 4, 0, TAU);
+        ctx.strokeStyle = 'rgba(255,130,40,0.7)'; ctx.lineWidth = 2.5; ctx.stroke();
+
+        // 별
+        const sg = ctx.createRadialGradient(starX, starY, 0, starX, starY, 22);
+        sg.addColorStop(0, '#fff'); sg.addColorStop(0.4, '#ffe066'); sg.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(starX, starY, 22, 0, TAU);
+        ctx.fillStyle = sg; ctx.fill();
+        ctx.beginPath(); ctx.arc(starX, starY, 7, 0, TAU);
+        ctx.fillStyle = '#fff'; ctx.fill();
+
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+
+// ── 섹션 3: 아인슈타인 링 ────────────────────────────────────────────────
+(function() {
+    const { c, ctx, W, H } = initCanvas('c2');
+    const bhX = W / 2, bhY = H / 2;
+    const RS = 20;
+    const RE = 70; // 아인슈타인 링 반지름
+
+    let frame = 0;
+
+    function lensImages(bx, by) {
+        // 렌즈 방정식 간소화: β = 소스 각도, θ_E = 아인슈타인 각도
+        const dx = bx - bhX, dy = by - bhY;
+        const beta = Math.sqrt(dx*dx + dy*dy);
+        const thetaE = RE;
+        // 두 이미지: θ = (β ± √(β²+4θ_E²)) / 2
+        const disc = Math.sqrt(beta*beta + 4*thetaE*thetaE);
+        const theta1 = (beta + disc) / 2;
+        const theta2 = Math.abs((-beta + disc) / 2);
+        const angle  = Math.atan2(dy, dx);
+        return [
+            { x: bhX + Math.cos(angle) * theta1, y: bhY + Math.sin(angle) * theta1, size: theta1 / (thetaE + 1) * 4 },
+            { x: bhX - Math.cos(angle) * theta2, y: bhY - Math.sin(angle) * theta2, size: theta2 / (thetaE + 1) * 4 },
+        ];
+    }
+
+    function drawRing(beta) {
+        // 완전 정렬에 가까울수록 링에 가까운 호 그리기
+        const maxArc  = TAU;
+        const arcSpan = maxArc * Math.max(0, 1 - beta / (RE * 1.2));
+        if (arcSpan < 0.05) return;
+
+        const alpha = Math.min(1, (1 - beta / (RE * 1.2)) * 2);
+        const rw = 3 + (1 - beta / (RE * 1.2)) * 5;
+
+        // 링 글로우
+        const g = ctx.createRadialGradient(bhX, bhY, RE - 8, bhX, bhY, RE + 14);
+        g.addColorStop(0, `rgba(255,180,60,0)`);
+        g.addColorStop(0.4, `rgba(255,180,60,${alpha * 0.35})`);
+        g.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(bhX, bhY, RE + 14, 0, TAU);
+        ctx.fillStyle = g; ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(bhX, bhY, RE, 0, arcSpan);
+        ctx.strokeStyle = `rgba(255,180,60,${alpha * 0.9})`;
+        ctx.lineWidth = rw;
+        ctx.stroke();
+    }
+
+    function animate() {
+        frame++;
+        ctx.fillStyle = 'rgba(2,5,16,0.92)';
+        ctx.fillRect(0, 0, W, H);
+
+        // 배경별
+        for (let i = 0; i < 50; i++) {
+            const sx = (Math.sin(i * 43.7) * 0.5 + 0.5) * W;
+            const sy = (Math.sin(i * 97.3) * 0.5 + 0.5) * H;
+            const sa = (Math.sin(i * 17.1 + frame * 0.01) * 0.3 + 0.7) * 0.4;
+            ctx.beginPath(); ctx.arc(sx, sy, 0.9, 0, TAU);
+            ctx.fillStyle = `rgba(180,210,255,${sa})`; ctx.fill();
+        }
+
+        // 별이 위쪽에서 BH 뒤로 통과 (y축 이동)
+        const period = 360;
+        const tNorm  = (frame % period) / period;
+        const starDist = RE * 1.8 * Math.cos(tNorm * TAU);
+        const starAngle = Math.PI / 2; // 위쪽에서 아래쪽으로
+        const sx = bhX + Math.cos(starAngle + Math.PI * 0.15) * starDist;
+        const sy = bhY + Math.sin(starAngle + Math.PI * 0.15) * starDist;
+        const beta = Math.sqrt((sx - bhX) ** 2 + (sy - bhY) ** 2);
+
+        // 아인슈타인 링 (정렬 근접 시)
+        if (beta < RE * 1.1) drawRing(beta);
+
+        // 블랙홀 글로우
+        const bhg = ctx.createRadialGradient(bhX, bhY, RS, bhX, bhY, RS * 5);
+        bhg.addColorStop(0, 'rgba(255,100,20,0.4)');
+        bhg.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(bhX, bhY, RS * 5, 0, TAU);
+        ctx.fillStyle = bhg; ctx.fill();
+
+        // 블랙홀
+        ctx.beginPath(); ctx.arc(bhX, bhY, RS, 0, TAU);
+        ctx.fillStyle = '#000'; ctx.fill();
+        ctx.beginPath(); ctx.arc(bhX, bhY, RS + 3, 0, TAU);
+        ctx.strokeStyle = 'rgba(255,120,30,0.8)'; ctx.lineWidth = 2; ctx.stroke();
+
+        // 렌즈 이미지 2개
+        if (beta > RS + 5) {
+            const imgs = lensImages(sx, sy);
+            imgs.forEach((img, i) => {
+                const sz = Math.max(1.5, Math.min(8, img.size));
+                const ig = ctx.createRadialGradient(img.x, img.y, 0, img.x, img.y, sz * 3);
+                ig.addColorStop(0, '#fff');
+                ig.addColorStop(0.4, '#ffcc66');
+                ig.addColorStop(1, 'transparent');
+                ctx.beginPath(); ctx.arc(img.x, img.y, sz * 3, 0, TAU);
+                ctx.fillStyle = ig; ctx.fill();
+                ctx.beginPath(); ctx.arc(img.x, img.y, sz, 0, TAU);
+                ctx.fillStyle = '#ffdd88'; ctx.fill();
+            });
+        }
+
+        // 실제 별 (반투명)
+        if (beta > RS + 5) {
+            const stg = ctx.createRadialGradient(sx, sy, 0, sx, sy, 12);
+            stg.addColorStop(0, 'rgba(255,230,100,0.7)');
+            stg.addColorStop(1, 'transparent');
+            ctx.beginPath(); ctx.arc(sx, sy, 12, 0, TAU);
+            ctx.fillStyle = stg; ctx.fill();
+            ctx.beginPath(); ctx.arc(sx, sy, 4, 0, TAU);
+            ctx.fillStyle = 'rgba(255,230,100,0.5)'; ctx.fill();
+            // 라벨
+            ctx.fillStyle = 'rgba(200,200,150,0.5)';
+            ctx.font = '10px system-ui';
+            ctx.textAlign = 'center';
+            ctx.fillText('실제 별', sx, sy - 16);
+        }
+
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+
+// ── 섹션 4: 미니 인터랙티브 데모 ─────────────────────────────────────────
+(function() {
+    const { c, ctx, W, H } = initCanvas('c3');
+    let bhX = W / 2, bhY = H / 2;
+    let mass = 1.0;
+    let autoMove = true;
+    let frame = 0;
+
+    c.style.cursor = 'crosshair';
+    c.addEventListener('mousemove', e => {
+        const rect = c.getBoundingClientRect();
+        const scaleX = W / rect.width;
+        const scaleY = H / rect.height;
+        bhX = (e.clientX - rect.left) * scaleX;
+        bhY = (e.clientY - rect.top)  * scaleY;
+        autoMove = false;
+    });
+    c.addEventListener('mouseleave', () => { autoMove = true; });
+
+    // 별 위치 (고정)
+    const stars = Array.from({ length: 80 }, (_, i) => ({
+        x: (Math.sin(i * 43.7) * 0.5 + 0.5) * W,
+        y: (Math.sin(i * 97.3) * 0.5 + 0.5) * H,
+        r: Math.random() * 1.2 + 0.5,
+        a: Math.random() * 0.6 + 0.3,
+    }));
+
+    function animate() {
+        frame++;
+        const rs = mass * 18;
+
+        if (autoMove) {
+            bhX = W/2 + Math.cos(frame * 0.007) * W * 0.22;
+            bhY = H/2 + Math.sin(frame * 0.011) * H * 0.22;
+        }
+
+        ctx.fillStyle = '#020510';
+        ctx.fillRect(0, 0, W, H);
+
+        // 별 그리기 (중력 렌즈 간이 시각화)
+        stars.forEach(s => {
+            const dx = s.x - bhX, dy = s.y - bhY;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            if (dist < rs) return;
+
+            const deflection = (rs * rs * 3) / dist;
+            const nx = s.x + (dx / dist) * deflection;
+            const ny = s.y + (dy / dist) * deflection;
+
+            const glow = ctx.createRadialGradient(nx, ny, 0, nx, ny, s.r * 4);
+            glow.addColorStop(0, `rgba(200,220,255,${s.a})`);
+            glow.addColorStop(1, 'transparent');
+            ctx.beginPath(); ctx.arc(nx, ny, s.r * 4, 0, TAU);
+            ctx.fillStyle = glow; ctx.fill();
+            ctx.beginPath(); ctx.arc(nx, ny, s.r, 0, TAU);
+            ctx.fillStyle = `rgba(210,230,255,${s.a})`; ctx.fill();
+        });
+
+        // 블랙홀
+        const bg = ctx.createRadialGradient(bhX, bhY, rs, bhX, bhY, rs * 5);
+        bg.addColorStop(0, 'rgba(255,100,20,0.4)');
+        bg.addColorStop(1, 'transparent');
+        ctx.beginPath(); ctx.arc(bhX, bhY, rs * 5, 0, TAU);
+        ctx.fillStyle = bg; ctx.fill();
+        ctx.beginPath(); ctx.arc(bhX, bhY, rs, 0, TAU);
+        ctx.fillStyle = '#000'; ctx.fill();
+        ctx.beginPath(); ctx.arc(bhX, bhY, rs + 3, 0, TAU);
+        ctx.strokeStyle = 'rgba(255,120,30,0.8)'; ctx.lineWidth = 2; ctx.stroke();
+
+        // 안내 텍스트
+        ctx.fillStyle = 'rgba(100,140,220,0.6)';
+        ctx.font = '11px system-ui';
+        ctx.textAlign = 'center';
+        ctx.fillText('마우스를 올려 블랙홀 위치를 바꿔보세요', W/2, H - 14);
+
+        requestAnimationFrame(animate);
+    }
+    animate();
+})();
+
+// ── 사이드 도트 네비게이션 ────────────────────────────────────────────────
+const sections = document.querySelectorAll('.learn-section');
+const dots = document.querySelectorAll('.side-dot');
+
+const io = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            const idx = [...sections].indexOf(entry.target);
+            dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+    });
+}, { threshold: 0.5 });
+
+sections.forEach(s => io.observe(s));
+dots.forEach(d => d.addEventListener('click', () => {
+    sections[+d.dataset.sec].scrollIntoView({ behavior: 'smooth' });
+}));
+</script>
+</body>
+</html>

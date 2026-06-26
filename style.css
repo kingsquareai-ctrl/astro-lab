@@ -159,18 +159,45 @@ main {
     color: var(--accent);
 }
 
-.card-arrow {
-    align-self: flex-end;
+.card-actions {
+    display: flex;
+    gap: 10px;
     margin-top: 20px;
-    font-size: 1.2rem;
-    color: var(--accent);
-    opacity: 0.5;
-    transition: opacity 0.2s, transform 0.2s;
 }
 
-.card:hover .card-arrow {
-    opacity: 1;
-    transform: translateX(4px);
+.btn-learn, .btn-sim {
+    flex: 1;
+    text-align: center;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.btn-learn {
+    background: rgba(126,179,255,0.08);
+    border: 1px solid rgba(126,179,255,0.25);
+    color: var(--accent);
+}
+
+.btn-learn:hover {
+    background: rgba(126,179,255,0.18);
+    border-color: rgba(126,179,255,0.5);
+    transform: translateY(-1px);
+}
+
+.btn-sim {
+    background: linear-gradient(135deg, rgba(126,179,255,0.18), rgba(192,132,252,0.18));
+    border: 1px solid rgba(126,179,255,0.35);
+    color: #e2ecff;
+}
+
+.btn-sim:hover {
+    background: linear-gradient(135deg, rgba(126,179,255,0.28), rgba(192,132,252,0.28));
+    border-color: rgba(126,179,255,0.6);
+    transform: translateY(-1px);
 }
 
 /* ── 푸터 ── */
