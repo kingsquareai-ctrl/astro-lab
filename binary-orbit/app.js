@@ -28,29 +28,29 @@ function initBgStars() {
     }));
 }
 
-// ── 천체 초기화 ──
-function initBodies() {
-    // 이진성: 서로 원형 공전하도록 초기 속도 계산
-    const sep  = Math.min(W, H) * 0.18;   // 두 별 사이 거리
+// ── 별 초기화 (질량 변경 시 별만 재설정) ──
+function initStars() {
+    const sep  = Math.min(W, H) * 0.18;
     const mSum = massA + massB;
-
-    // 질량 중심 기준 각 별의 거리
     const rA = sep * massB / mSum;
     const rB = sep * massA / mSum;
-
-    // 원형 공전 속도: v = sqrt(G * m_other / sep)
-    const vA = Math.sqrt(G * massB / sep) * (massB / mSum) / (massA / mSum) * (massA / mSum);
-    const vB = Math.sqrt(G * massA / sep) * (massA / mSum) / (massB / mSum) * (massB / mSum);
-
-    // 실제: 질량 중심에서 각 별의 공전 속도
     const vCircA = Math.sqrt(G * massB * massB / (mSum * sep));
     const vCircB = Math.sqrt(G * massA * massA / (mSum * sep));
 
     starA = { x: cx - rA, y: cy, vx: 0, vy: -vCircA, m: massA, r: 12 + massA * 6 };
     starB = { x: cx + rB, y: cy, vx: 0, vy:  vCircB, m: massB, r: 10 + massB * 5 };
+    trailA = [];
+    trailB = [];
+    trailPlanet = [];
+}
 
-    // 행성: 질량 중심 주위 더 넓은 궤도로 시작
-    const pOrbit = sep * 2.2;
+// ── 행성 초기화 (기울기 변경 또는 전체 리셋 시) ──
+function initPlanet() {
+    const sep  = Math.min(W, H) * 0.18;
+    const mSum = massA + massB;
+
+    // 총 질량이 클수록 더 넓은 안정 궤도 → 질량 변경 시 즉시 크기 차이 확인 가능
+    const pOrbit = sep * (1.6 + mSum * 0.38);
     const tiltRad = (tilt * Math.PI) / 180;
     const vPlanet = Math.sqrt(G * mSum / pOrbit);
 
@@ -59,15 +59,18 @@ function initBodies() {
         y:  cy,
         vx: 0,
         vy: vPlanet * Math.cos(tiltRad),
-        vz: vPlanet * Math.sin(tiltRad),  // 3D 기울기 표현용 z속도
+        vz: vPlanet * Math.sin(tiltRad),
         z:  0,
         m: 0.001,
         r: 5,
     };
-
     trailPlanet = [];
-    trailA = [];
-    trailB = [];
+}
+
+// ── 전체 초기화 ──
+function initBodies() {
+    initStars();
+    initPlanet();
 }
 
 // ── 물리 업데이트 (RK2 적분) ──
@@ -269,10 +272,13 @@ function bindSlider(id, valId, setter, decimals = 1) {
     });
 }
 
-bindSlider('massA', 'massAVal', v => { massA = v; });
-bindSlider('massB', 'massBVal', v => { massB = v; });
+// 질량 변경: 별만 재설정, 행성은 계속 실행하며 즉시 중력 변화를 받음
+bindSlider('massA', 'massAVal', v => { massA = v; initStars(); });
+bindSlider('massB', 'massBVal', v => { massB = v; initStars(); });
+// 속도: 리셋 없음
 bindSlider('speed', 'speedVal', v => { speed = v; });
-bindSlider('tilt',  'tiltVal',  v => { tilt  = v; }, 0);
+// 기울기: 행성 궤도면 자체가 바뀌므로 행성만 재설정
+bindSlider('tilt',  'tiltVal',  v => { tilt  = v; initPlanet(); }, 0);
 
 document.getElementById('showTrail').addEventListener('change', e => {
     showTrail = e.target.checked;
